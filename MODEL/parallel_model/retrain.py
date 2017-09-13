@@ -1146,9 +1146,11 @@ def main(_):
 
     if FLAGS.print_misclassified_test_images:
       tf.logging.info('=== MISCLASSIFIED TEST IMAGES ===')
-      for i, test_filename in enumerate(test_filenames):
-        if predictions[i] != test_ground_truth[i].argmax():
-          tf.logging.info('%70s  %s' %
+      with open("/tmp/test_result.txt", 'w') as f:
+          for i, test_filename in enumerate(test_filenames):
+              f.write(test_filename+" "+str(predictions[i])+" "+str(test_ground_truth[i].argmax())+"\n")
+              if predictions[i] != test_ground_truth[i].argmax():
+                  tf.logging.info('%70s  %s' %
                           (test_filename,
                            list(image_lists.keys())[predictions[i]]))
 
@@ -1262,7 +1264,7 @@ if __name__ == '__main__':
   )
   parser.add_argument(
       '--print_misclassified_test_images',
-      default=False,
+      default=True,
       help="""\
       Whether to print out a list of all misclassified test images.\
       """,
