@@ -1,0 +1,23 @@
+<div id="result" class="row">
+  <div class="col-md-8">
+  <div id="image">
+  <img src="{{result.img_url}}" id="main_image" width="80%" height="80%"/>
+  </div>
+  <div class="labels">
+    {% for label in result.labels %}
+      <h4><span class="label label-info">{{label}}</span></h4>
+    {% endfor %}
+  </div>
+</div>
+  <div class="faces col-md-3">
+    {% for toy in result.toys %}
+      Toys puppy may like: <br/>
+      <ul>
+      <li>{{toy.toy_name}} , {{toy.price}} , Stars:{{toy.likelyrating}}</li>
+      {% if toy.toy_link %}
+      <li><a target="_blank" href={{toy.toy_link}}> Link </a></li>
+      {% endif %}
+    </ul>
+    {% endfor %}
+  </div>
+</div>

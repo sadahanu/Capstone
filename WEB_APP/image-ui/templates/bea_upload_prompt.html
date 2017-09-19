@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<title>welcome to play</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+body, html {
+    height: 100%;
+    line-height: 1.8;
+}
+/* Full height image header */
+
+.w3-bar .w3-button {
+    padding: 16px;
+}
+
+div.dog {background-image: url("../static/play_background.jpg"); background-position: center;
+background-size: cover;min-height: 100%}
+</style>
+
+<!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link href="static/styles.css" rel="stylesheet">
+
+<body>
+
+<!-- Navbar (sit on top) -->
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-card-2" id="myNavbar">
+    <a href="./" class="w3-bar-item w3-button w3-wide">Home</a>
+    <!-- Right-sided navbar links -->
+    <div class="w3-right w3-hide-small">
+      <a href="#contact" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i> CONTACT</a>
+    </div>
+    <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
+</div>
+
+<!-- Sidebar on small screens when clicking the menu icon -->
+<nav class="w3-sidebar w3-bar-block w3-black w3-card-2 w3-animate-left w3-hide-medium w3-hide-large" style="display:none" id="mySidebar">
+  <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Close ×</a>
+  <a href="#contact" onclick="w3_close()" class="w3-bar-item w3-button">CONTACT</a>
+</nav>
+
+<div id="background" class="container dog" >
+<!-- try to insert the upload part -->
+<br></br>
+<div class="row">
+  <div class="col-md-1" style="top:55vh"> <!-- delete input-group-lg col-md-offset-4-->
+    <div class="input-group-lg">
+    <form id="uploadimage" action="" method="post" enctype="multipart/form-data">
+      <span class="btn-group-vertical">
+        <label class="btn btn-default btn-file">
+          <b>Browse</b><input type="file" name="file" id="file" accept="image/*" required style="display: none;">
+        </label>
+        <input type="text" class="form-control" readonly style="display: none;">
+        <label class="btn btn-primary btn-file">
+          <b>Calculate</b> <input type="submit" class="submit" style="display: none;">
+        </label>
+      </span>
+    </form>
+    <h4 id='loading' >loading..</h4>
+  </div>
+</div>
+  <div id="results" class="col-md-11" style="top:10vh"></div>
+</div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script>
+
+$(document).ready(function (e) {
+$('#loading').hide();
+
+$("#uploadimage").on('submit',(function(e) {
+  e.preventDefault();
+  $("#results").empty();
+  $('#loading').show();
+  $.ajax({
+    url: "uploader", // Url to which the request is send
+    type: "POST",             // Type of request to be send, called as method
+    data: new FormData(this), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+    contentType: false,       // The content type used when sending data to the server.
+    cache: false,             // To unable request pages to be cached
+    processData:false,        // To send DOMDocument or non processed data file it is set to false
+    success: function(data)   // A function to be called if request succeeds
+    {
+      $('#loading').hide();
+      $("#results").html(data);
+      $('#background').removeClass('dog');
+    }
+  });
+}));
+
+// Function to preview image after validation
+$(function() {
+  $("#file").change(function() {
+    $("#message").empty(); // To remove the previous error message
+    var file = this.files[0];
+    var imagefile = file.type;
+    var match= ["image/jpeg","image/png","image/jpg"];
+    if(!((imagefile==match[0]) || (imagefile==match[1]) || (imagefile==match[2])))
+    {
+      //$('#previewing').attr('src','noimage.png');
+      $("#result").html("<p id='error'>Please Select A valid Image File</p>"+"<h4>Note</h4>"+"<span id='error_message'>Only jpeg, jpg and png Images type allowed</span>");
+      return false;
+    }
+    else
+    {
+      var reader = new FileReader();
+      reader.onload = imageIsLoaded;
+      reader.readAsDataURL(this.files[0]);
+    }
+  });
+});
+
+function imageIsLoaded(e) {
+  $("#file").css("color","green");
+  $('#image_preview').css("display", "block");
+  $('#previewing').attr('src', e.target.result);
+  $('#previewing').attr('width', '250px');
+  $('#previewing').attr('height', '230px');
+};
+});
+
+function showToys(){
+  $("div.hidden_toys").css("display", "inline");
+  console.log("show toys called");
+};
+</script>
+</body>
+</html>

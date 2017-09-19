@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<title>welcome to play</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+body, html {
+    height: 100%;
+    line-height: 1.8;
+}
+/* Full height image header */
+
+.w3-bar .w3-button {
+    padding: 16px;
+}
+
+div.dog {background-image: url("../static/play_background.jpg"); background-position: center;
+background-size: cover;min-height: 100%}
+
+
+</style>
+
+<!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link href="static/styles.css" rel="stylesheet">
+
+<body>
+
+<!-- Navbar (sit on top) -->
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-card-2" id="myNavbar">
+    <a href="./" class="w3-bar-item w3-button w3-wide">Home</a>
+    <!-- Right-sided navbar links -->
+    <div class="w3-right w3-hide-small">
+      <a href="#contact" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i> CONTACT</a>
+    </div>
+    <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
+</div>
+
+<!-- Sidebar on small screens when clicking the menu icon -->
+<nav class="w3-sidebar w3-bar-block w3-black w3-card-2 w3-animate-left w3-hide-medium w3-hide-large" style="display:none" id="mySidebar">
+  <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Close ×</a>
+  <a href="#contact" onclick="w3_close()" class="w3-bar-item w3-button">CONTACT</a>
+</nav>
+
+<div id="background" class="container dog" >
+<!-- try to insert the upload part -->
+<br></br>
+<div class="row">
+<div class="col-md-6" style="top:5vh"> <!-- delete input-group-lg col-md-offset-4-->
+  <fieldset>
+    <legend>Choose toys that your dog likes</legend>
+    {% for i in range(5) %}
+    <div class="col-md-{{4*i%2+4}}">
+      <input type="checkbox" id="{{i}}" class="toys_chosen" value="{{samples[i].toy_id}}">
+      <label for="{{i}}"><img src="{{samples[i].img}}" alt="Sandwich" width="150px" margin-left="5px" margin-right="5px" class="w3-square"></label>
+   </div>
+  {% endfor %}
+</fieldset>
+     <br></br>
+     <div>
+    <a href="/checkbox"><button type="submit" class='w3-white btn btn-primary'>Re-Pick</button></a>
+    <button type="submit" class='w3-blue btn btn-primary' onclick="send_toy_info()">
+      <b>Find Recommendations!</b></button>
+    </div>
+</div>
+<div id="results" class="col-md-11" style="top:10vh"></div>
+</div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+
+function get_toys_input(){
+   input_toys = $(' .toys_chosen:checkbox:checked')
+   .map(function(){
+     return $(this).val();
+   }).get();
+   return input_toys
+ }
+
+function send_toy_info(){
+  input_toys = {'data':get_toys_input()}
+  console.log(input_toys);
+  $.ajax({
+    url: "/checkbox_submit", // Url to which the request is send
+    type: "POST",             // Type of request to be send, called as method
+    data: JSON.stringify(input_toys), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+    contentType: "application/JSON",
+    success: function(data)   // A function to be called if request succeeds
+    {
+      $("#results").html(data);
+      $('#background').removeClass('dog');
+    }
+  });
+}
+
+</script>
