@@ -1,2 +1,7 @@
 *.gz
 *.ckpt
+*.pb
+*.mov
+*.jpg
+*.jpeg
+*.pyc

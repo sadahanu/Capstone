@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta Http-Equiv="Cache-Control" Content="no-cache">
+  <meta Http-Equiv="Pragma" Content="no-cache">
+  <meta Http-Equiv="Expires" Content="0">
+  <meta Http-Equiv="Pragma-directive: no-cache">
+  <meta Http-Equiv="Cache-directive: no-cache">
+
+  <title>Upload Image</title>
+  <style>
+     div.dog {background-image: url("../static/play_background.jpg"); background-position: center;
+     background-size: cover;min-height: 60vh;}
+  </style>
+  <!-- Bootstrap -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <link href="static/styles.css" rel="stylesheet">
+</head>
+
+<body style="min-height:100%">
+  <div id="background" class="container dog" >
+  <div class="row">
+    <div class="col-md-1" style="top:55vh"> <!-- delete input-group-lg col-md-offset-4-->
+      <div class="input-group-lg">
+      <form id="uploadimage" action="" method="post" enctype="multipart/form-data">
+        <span class="btn-group-vertical">
+          <label class="btn btn-default btn-file">
+            Browse <input type="file" name="file" id="file" accept="image/*" required style="display: none;">
+          </label>
+          <input type="text" class="form-control" readonly style="display: none;">
+          <label class="btn btn-primary btn-file">
+            Upload <input type="submit" class="submit" style="display: none;">
+          </label>
+        </span>
+      </form>
+      <h4 id='loading' >loading..</h4>
+    </div>
+  </div>
+    <div id="results" class="col-md-11"></div>
+  </div>
+  </div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script>
+
+$(document).ready(function (e) {
+  $('#loading').hide();
+
+  $("#uploadimage").on('submit',(function(e) {
+    e.preventDefault();
+    $("#results").empty();
+    $('#loading').show();
+    $.ajax({
+      url: "uploader", // Url to which the request is send
+      type: "POST",             // Type of request to be send, called as method
+      data: new FormData(this), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+      contentType: false,       // The content type used when sending data to the server.
+      cache: false,             // To unable request pages to be cached
+      processData:false,        // To send DOMDocument or non processed data file it is set to false
+      success: function(data)   // A function to be called if request succeeds
+      {
+        $('#loading').hide();
+        $("#results").html(data);
+        $('#background').removeClass('dog');
+      }
+    });
+  }));
+
+  // Function to preview image after validation
+  $(function() {
+    $("#file").change(function() {
+      $("#message").empty(); // To remove the previous error message
+      var file = this.files[0];
+      var imagefile = file.type;
+      var match= ["image/jpeg","image/png","image/jpg"];
+      if(!((imagefile==match[0]) || (imagefile==match[1]) || (imagefile==match[2])))
+      {
+        //$('#previewing').attr('src','noimage.png');
+        $("#result").html("<p id='error'>Please Select A valid Image File</p>"+"<h4>Note</h4>"+"<span id='error_message'>Only jpeg, jpg and png Images type allowed</span>");
+        return false;
+      }
+      else
+      {
+        var reader = new FileReader();
+        reader.onload = imageIsLoaded;
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+  });
+
+  function imageIsLoaded(e) {
+    $("#file").css("color","green");
+    $('#image_preview').css("display", "block");
+    $('#previewing').attr('src', e.target.result);
+    $('#previewing').attr('width', '250px');
+    $('#previewing').attr('height', '230px');
+  };
+});
+
+</script>
+</body>
+
+</html>
